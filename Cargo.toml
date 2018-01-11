@@ -1,0 +1,19 @@
+[package]
+name = "webview"
+version = "0.1.0"
+authors = ["Alan Hoffmeister <alanhoffmeister@gmail.com>"]
+build = "build.rs"
+exclude = ["examples/*", "assets/*", ".rustfmt.toml", ".gitignore"]
+repository = "https://github.com/alanhoff/rust-webview"
+homepage = "https://github.com/alanhoff/rust-webview"
+readme = "README.md"
+license = "ISC"
+keywords = ["gui", "web", "html", "css", "javascript"]
+description = "Tiny cross-platform UI library for Rust that uses a webview for rendering HTML5"
+category = "gui"
+
+[build-dependencies]
+cc = "1.0.4"
+
+[dependencies]
+urlencoding = "1.0.0"
