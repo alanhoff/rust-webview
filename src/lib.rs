@@ -7,7 +7,6 @@ use std::ffi::NulError;
 use std::os::raw::c_void;
 use std::fmt::Display;
 use urlencoding::encode;
-use std::mem;
 
 pub enum Content<S: Into<String> + Display> {
     Url(S),
@@ -34,6 +33,8 @@ impl WebView {
             }
         };
 
+        let priv_size = unsafe { get_priv_size() };
+
         let window = Box::new(Window {
             url: to_cstring_ptr(url)?,
             title: to_cstring_ptr(title)?,
@@ -41,6 +42,7 @@ impl WebView {
             height: height,
             resizable: resizable as i32,
             debug: debug as i32,
+            private: vec![0; priv_size],
         });
 
         unsafe {
@@ -102,7 +104,7 @@ impl WebView {
     pub fn join(&self) {
         let window = &self.window;
 
-        unsafe { while r_webview_loop(window, 1) != 1 {} }
+        unsafe { while r_webview_loop(window, 1) == 0 {} }
     }
 
     pub fn exit(&self) {
@@ -116,7 +118,7 @@ impl WebView {
     pub fn loop_once(&self, blocking: bool) -> bool {
         let window = &self.window;
 
-        unsafe { r_webview_loop(window, blocking as i32) == 1 }
+        unsafe { r_webview_loop(window, blocking as i32) == 0 }
     }
 }
 

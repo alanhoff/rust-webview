@@ -18,6 +18,7 @@ pub struct Window {
     pub height: c_int,
     pub resizable: c_int,
     pub debug: c_int,
+    pub private: Vec<u8>,
 }
 
 #[repr(C)]
@@ -48,6 +49,7 @@ pub const WEBVIEW_DIALOG_FLAG_ALERT_MASK: c_int = (3 << 1);
 pub const DEFAULT_URL: &str = "data:text/html,%3Cbody%3E%3C%2Fbody%3E";
 
 extern "C" {
+    pub fn get_priv_size() -> usize;
     pub fn r_webview_init(webview: &Window) -> c_int;
     pub fn r_webview_loop(webview: &Window, blocking: c_int) -> c_int;
     pub fn r_webview_exit(webview: &Window);

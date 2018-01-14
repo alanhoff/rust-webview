@@ -1,5 +1,9 @@
 #include "webview.h"
 
+size_t get_Documentpriv_size() {
+    return sizeof (struct webview_priv);
+}
+
 int r_webview_init(struct webview *w)
 {
     return webview_init(w);
