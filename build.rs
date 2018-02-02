@@ -1,13 +1,43 @@
 extern crate cc;
+extern crate pkg_config;
+
+use std::env;
 
 fn main() {
-    println!("cargo:rustc-link-lib=framework=Cocoa");
-    println!("cargo:rustc-link-lib=framework=WebKit");
+    let mut build = cc::Build::new();
+    build.file("library/webview.c");
 
-    cc::Build::new()
-        .define("WEBVIEW_COCOA", "1")
-        .file("library/webview.c")
-        .flag("-x")
-        .flag("objective-c")
-        .compile("libwebview.a");
+    if env::var("DEBUG").is_err() {
+        build.define("NDEBUG", None);
+    } else {
+        build.define("DEBUG", None);
+    }
+
+    let target = env::var("TARGET").unwrap();
+
+    if target.contains("windows") {
+        build.define("WEBVIEW_WINAPI", None);
+    } else if target.contains("linux") || target.contains("bsd") {
+        let webkit = pkg_config::Config::new()
+            .atleast_version("2.8")
+            .probe("webkit2gtk-4.0")
+            .unwrap();
+
+        for path in webkit.include_paths {
+            build.include(path);
+        }
+
+        build.define("WEBVIEW_GTK", None);
+    } else if target.contains("apple") {
+        println!("cargo:rustc-link-lib=framework=Cocoa");
+        println!("cargo:rustc-link-lib=framework=WebKit");
+
+        build.define("WEBVIEW_COCOA", None);
+        build.flag("-x");
+        build.flag("objective-c");
+    } else {
+        panic!("unsupported target");
+    }
+
+    build.compile("libwebview.a");
 }

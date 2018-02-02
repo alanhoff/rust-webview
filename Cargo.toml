@@ -10,10 +10,11 @@ readme = "README.md"
 license = "ISC"
 keywords = ["gui", "web", "html", "css", "javascript"]
 description = "Tiny cross-platform UI library for Rust that uses a webview for rendering HTML5"
-category = "gui"
+categories = ["gui", "web-programming", "api-bindings", "rendering", "visualization"]
 
 [build-dependencies]
 cc = "1.0.4"
+pkg-config = "0.3"
 
 [dependencies]
 urlencoding = "1.0.0"
