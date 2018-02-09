@@ -5,6 +5,7 @@ use std::env;
 
 fn main() {
     let mut build = cc::Build::new();
+    build.flag_if_supported("-std=c11");
     build.file("library/webview.c");
 
     if env::var("DEBUG").is_err() {
